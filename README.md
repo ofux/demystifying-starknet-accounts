@@ -21,14 +21,14 @@ pip install cairo-lang
 make
 ```
 
-### Prepare the environement
+### 🔧 Prepare the environement
 
 ```bash
 export STARKNET_NETWORK=alpha-goerli
 export STARKNET_WALLET=starkware.starknet.wallets.open_zeppelin.OpenZeppelinAccount
 ```
 
-### Deploy the contract
+### 🚀 Deploy the contract
 
 First, deploy the contract that will be used for test. This is the target contract we will be invoking.
 
@@ -42,7 +42,7 @@ make deploy
 export CONTRACT_ADDRESS=<the-contract-address-coming-from-the-output-of-make-deploy>
 ```
 
-### Deploy the account contract
+### 🚀 Deploy the account contract
 
 Now, deploy the account contract. This is a contract like any other, except that it fullfils some interface that makes it 
 usable by a wallet, as an account contract.
@@ -58,6 +58,7 @@ Check the transaction has been accepted on L2 or L1 (wait until it is the case):
 You'll need it to pay fees.
 Wait until the request is complete.
 If you get `FEE_TRANSFER_FAILURE` errors while trying some commands below, just return to the faucet and ask for more ETH.
+
 
 ## Usage
 
