@@ -21,6 +21,13 @@ pip install cairo-lang
 make
 ```
 
+### Prepare the environement
+
+```bash
+export STARKNET_NETWORK=alpha-goerli
+export STARKNET_WALLET=starkware.starknet.wallets.open_zeppelin.OpenZeppelinAccount
+```
+
 ### Deploy the contract
 
 First, deploy the contract that will be used for test. This is the target contract we will be invoking.
@@ -38,7 +45,7 @@ export CONTRACT_ADDRESS=<the-contract-address-coming-from-the-output-of-make-dep
 ### Deploy the account contract
 
 Now, deploy the account contract. This is a contract like any other, except that it fullfils some interface that makes it 
-usable by starknet cli, through a wallet.
+usable by a wallet, as an account contract.
 
 ```bash
 make deploy-account
@@ -46,8 +53,11 @@ make deploy-account
 
 Check the transaction has been accepted on L2 or L1 (wait until it is the case): `starknet get_transaction --hash <transaction-hash>`.
 
-**Once the transaction has been accepted on L2 or L1**, go to [https://faucet.goerli.starknet.io/](https://faucet.goerli.starknet.io/) and copy-paste the account contract address to get some ETH. You'll need it to pay fees.
+**Once the transaction has been accepted on L2 or L1**, go to [https://faucet.goerli.starknet.io/](https://faucet.goerli.starknet.io/) and copy-paste the account contract address to get some ETH.
+
+You'll need it to pay fees.
 Wait until the request is complete.
+If you get `FEE_TRANSFER_FAILURE` errors while trying some commands below, just return to the faucet and ask for more ETH.
 
 ## Usage
 
@@ -92,15 +102,24 @@ end
 make direct-invoke
 ```
 
-Note the transaction hash. You will notice that executing this command multiple times will always generate the same transaction
+Keep the transaction hash. You will notice that executing this command multiple times will always generate the same transaction
 hash!
 
-Check the transaction has been accepted on L2 or L1 (wait until it is the case): `starknet get_transaction --hash <transaction-hash>`. In case you already executed `make direct-invoke` previously, make sure the `block_number` is higher
-than the last time. Otherwise, it means you are seeing information about the previous transaction!
+Check the transaction has been accepted on L2 or L1 (wait until it is the case): `starknet get_transaction --hash <transaction-hash>`.
 
 **Once the transaction has been accepted on L2 or L1**, execute `make get-last-invoke-info` to retrieve interesting information about this invokation.
 
 You should notice that the `caller_address` is 0, and the `account_contract_address` is the address of the contract itself!
+
+If you try to call `make direct-invoke` again, the same transaction hash will be returned. Even worse, the invokation is actually not done at all (use `starknet get_transaction --hash <transaction-hash>` and `make get-last-invoke-info` to check by yourself)!
+
+### Invoke the contract without using an account, but with different calldata
+
+```bash
+make direct-invoke-with-different-calldata
+```
+
+Note that the transaction hash is different than the one returned by `make direct-invoke`. This is because we invoked the contract's function with different parameter (ie. different calldata).
 
 ### Invoke the contract using an account
 

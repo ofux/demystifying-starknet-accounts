@@ -5,6 +5,9 @@ from starkware.starknet.common.syscalls import (
     get_tx_info, get_caller_address, TxInfo, get_block_number)
 
 struct InvokeInfo:
+    # Id of the invokation. This is incremented everytime try_me is being invoked.
+    member id : felt
+
     # The version of the transaction. It is fixed (currently, 0) in the OS, and should be
     # signed by the account contract.
     # This field allows invalidating old transactions, whenever the meaning of the other
@@ -38,12 +41,16 @@ func get_last_invoke_info{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, rang
 end
 
 @external
-func try_me{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}():
+func try_me{syscall_ptr : felt*, pedersen_ptr : HashBuiltin*, range_check_ptr}(foo : felt):
     let (block_number) = get_block_number()
     let (tx_info : TxInfo*) = get_tx_info()
     let (caller_address) = get_caller_address()
 
+    let (previous_invoke_info : InvokeInfo) = last_invoke_info.read()
+    let new_id = previous_invoke_info.id + 1
+
     let invoke_info = InvokeInfo(
+        id=new_id,
         version=tx_info.version,
         account_contract_address=tx_info.account_contract_address,
         chain_id=tx_info.chain_id,
