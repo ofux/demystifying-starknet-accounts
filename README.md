@@ -76,6 +76,9 @@ The structure of returned information is:
 
 ```cairo
 struct InvokeInfo:
+    # Id of the invokation. This is incremented everytime try_me is being invoked.
+    member id : felt
+
     # The version of the transaction. It is fixed (currently, 0) in the OS, and should be
     # signed by the account contract.
     # This field allows invalidating old transactions, whenever the meaning of the other
@@ -104,15 +107,15 @@ make direct-invoke
 ```
 
 Keep the transaction hash. You will notice that executing this command multiple times will always generate the same transaction
-hash!
+hash.
 
 Check the transaction has been accepted on L2 or L1 (wait until it is the case): `starknet get_transaction --hash <transaction-hash>`.
 
 **Once the transaction has been accepted on L2 or L1**, execute `make get-last-invoke-info` to retrieve interesting information about this invokation.
 
-You should notice that the `caller_address` is 0, and the `account_contract_address` is the address of the contract itself!
+You should notice that the `caller_address` is 0, and the `account_contract_address` is the address of the contract itself.
 
-If you try to call `make direct-invoke` again, the same transaction hash will be returned. Even worse, the invokation is actually not done at all (use `starknet get_transaction --hash <transaction-hash>` and `make get-last-invoke-info` to check by yourself)!
+If you try to call `make direct-invoke` again, the same transaction hash will be returned.
 
 ### Invoke the contract without using an account, but with different calldata
 
